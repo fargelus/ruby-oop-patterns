@@ -15,7 +15,7 @@ class Employee
     "Employee: name: #{name} number: #{number} address: #{address}"
   end
 
-  def to_json
+  def to_json(*_args)
     {
       name: name,
       number: number,
@@ -38,6 +38,7 @@ class EmployeeJournal
   def change_address(number, address)
     employee = @employees[number]
     raise 'No such employee' unless employee
+
     employee.address = address
   end
 
@@ -65,7 +66,7 @@ class AbstractCommand
   private
 
   # children may overwrite it
-  def post_initialize(args = {})
+  def post_initialize(_args = {})
     nil
   end
 end
@@ -98,6 +99,7 @@ class DeleteEmployee < AbstractCommand
 
   def unexecute
     raise 'No such employee' if @employee_hash.nil?
+
     employee = Employee.new(
       name: @employee_hash[:name],
       number: @employee_hash[:number],
@@ -124,13 +126,14 @@ class ChangeAddress < AbstractCommand
 
   def unexecute
     raise 'No such employee' if @old_addres.nil?
+
     system.change_address(number, @old_addres)
     @old_addres = nil
   end
 
   private
 
-  def post_initialize(args={})
+  def post_initialize(args = {})
     @number = args[:number]
     @address = args[:address]
     @old_addres = nil
@@ -154,7 +157,6 @@ class FindEmployee < AbstractCommand
     @number = args[:number]
   end
 end
-
 
 john = Employee.new(
   name: 'John',
@@ -212,7 +214,6 @@ delete_elvie.execute
 
 EmployeeJournal.instance.import_employees # 3 employees
 
-
 delete_elvie.unexecute
 
 EmployeeJournal.instance.import_employees # 4 employees
@@ -226,11 +227,8 @@ find_number5.execute
 
 find_number5.unexecute # nil
 
-
 # or run it in queue
 [
   add_john, add_coby, add_karianne, add_elvie, add_santos,
   delete_elvie, change_number5
-].each do |command|
-  command.execute
-end
+].each(&:execute)

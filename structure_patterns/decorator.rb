@@ -13,7 +13,7 @@ end
 
 class RobotFirstDecorator < SimpleDelegator
   def age
-    ((Time.now - release_date) / 31557600).floor
+    ((Time.now - release_date) / 31_557_600).floor
   end
 end
 
@@ -24,9 +24,9 @@ class RobotSecondDecorator < SimpleDelegator
 end
 
 robot = Robot.new(
-  release_date: Time.new(2015, 3, 2, 3, 0, "+03:00"),
-  id: "934kawrr22",
-  model_name: "IOI"
+  release_date: Time.new(2015, 3, 2, 3, 0, '+03:00'),
+  id: '934kawrr22',
+  model_name: 'IOI'
 )
 
 robot_decorator = RobotFirstDecorator.new(robot)

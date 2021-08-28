@@ -18,7 +18,6 @@ end
 class Comment < ApplicationRecord
 end
 
-
 ##
 # proxy
 class CommentAntiSpamProxy
@@ -36,11 +35,12 @@ class CommentAntiSpamProxy
   private
 
   def need_to_check_spam?(name, answer)
-    answer == true and (['save', 'update_attributes'].include?(name.to_s))
+    (answer == true) && %w[save update_attributes].include?(name.to_s)
   end
 
   def check_spam
     return unless SpamFilter.is_spam?(real_comment.message)
+
     real_comment.update_attrubutes(spam: true)
   end
 end

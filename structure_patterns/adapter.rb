@@ -3,7 +3,9 @@
 module TagCreator
   def self.render(tag_object)
     return '' if tag_object.nil?
-    return tag_object if tag_object.is_a?(::String) or tag_object.is_a?(::Integer)
+    if tag_object.is_a?(::String) || tag_object.is_a?(::Integer)
+      return tag_object
+    end
 
     str = "<#{tag_object.tag_name}>"
     str += TagCreator.render(tag_object.content)
